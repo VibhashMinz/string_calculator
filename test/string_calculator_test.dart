@@ -31,5 +31,19 @@ void main() {
       final calc = StringCalculator();
       expect(calc.add("//;\n1;2"), equals(3));
     });
+
+    test('throws when negative numbers present and lists all negatives', () {
+      final calc = StringCalculator();
+
+      // Using try/catch so we can assert the exception message precisely
+      try {
+        calc.add('1,-2,3,-4');
+        fail('Expected exception for negative numbers');
+      } catch (e) {
+        // Ensure exception text contains the full list of negatives
+        final msg = e.toString();
+        expect(msg, contains('negative numbers not allowed -2,-4'));
+      }
+    });
   });
 }
