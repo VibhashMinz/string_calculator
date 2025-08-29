@@ -1,4 +1,3 @@
-// lib/string_calculator.dart
 class StringCalculator {
   int add(String numbers) {
     if (numbers.trim().isEmpty) return 0;
@@ -9,16 +8,27 @@ class StringCalculator {
     // Check for custom delimiter prefix
     if (numbers.startsWith('//')) {
       final parts = numbers.split('\n');
-      final delimiterLine = parts[0]; // e.g., "//;"
-      // everything after the first line is the actual input
+      final delimiterLine = parts[0]; // e.g., "//[***][%]"
       input = parts.length > 1 ? parts.sublist(1).join('\n') : '';
 
-      // Extract delimiter from "//;"
-      final delimiter = delimiterLine.substring(2);
-      // Escape it so regex treats special characters literally
-      delimiterPattern = RegExp.escape(delimiter);
+      //  Handle multiple/long delimiters inside [ ]
+      if (delimiterLine.contains('[')) {
+        final regex = RegExp(r'\[(.*?)\]');
+        final matches = regex.allMatches(delimiterLine);
+
+        // Collect all delimiters
+        final delimiters = matches.map((m) => RegExp.escape(m.group(1)!)).toList();
+
+        // Build combined regex: ***|%|foo|bar
+        delimiterPattern = delimiters.join('|');
+      } else {
+        //  Single-char delimiter case, e.g. "//;"
+        final delimiter = delimiterLine.substring(2);
+        delimiterPattern = RegExp.escape(delimiter);
+      }
     }
 
+    //  Split input using regex of one or more delimiters
     final tokens = input.split(RegExp(delimiterPattern));
 
     final negatives = <int>[];
@@ -26,9 +36,9 @@ class StringCalculator {
 
     for (var token in tokens) {
       final t = token.trim();
-      if (t.isEmpty) continue; // skip accidental empty pieces like "1,\n2" -> ["1","","2"]
+      if (t.isEmpty) continue;
 
-      final value = int.parse(t); // may throw FormatException if token isn't numeric (ok)
+      final value = int.parse(t);
       if (value < 0) {
         negatives.add(value);
       } else if (value <= 1000) {
@@ -37,7 +47,6 @@ class StringCalculator {
     }
 
     if (negatives.isNotEmpty) {
-      // Build the required message and throw
       throw Exception('negative numbers not allowed ${negatives.join(',')}');
     }
 

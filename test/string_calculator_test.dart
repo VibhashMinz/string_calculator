@@ -51,5 +51,21 @@ void main() {
       expect(calc.add('2,1001'), equals(2));
       expect(calc.add('1000,2'), equals(1002)); // 1000 is allowed
     });
+
+    test('delimiter of any length like [***]', () {
+      final calc = StringCalculator();
+
+      expect(calc.add('//[***]\n1***2***3'), 6);
+    });
+
+    test("multiple delimiters [*] and [%]", () {
+      final calc = StringCalculator();
+      expect(calc.add('//[*][%]\n1*2%3'), 6);
+    });
+
+    test('multiple delimiters with length longer than 1', () {
+      final calc = StringCalculator();
+      expect(calc.add('//[***][%%]\n1***2%%3'), 6);
+    });
   });
 }
