@@ -45,5 +45,11 @@ void main() {
         expect(msg, contains('negative numbers not allowed -2,-4'));
       }
     });
+
+    test('ignores numbers greater than 1000', () {
+      final calc = StringCalculator();
+      expect(calc.add('2,1001'), equals(2));
+      expect(calc.add('1000,2'), equals(1002)); // 1000 is allowed
+    });
   });
 }

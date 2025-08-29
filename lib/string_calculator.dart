@@ -31,7 +31,7 @@ class StringCalculator {
       final value = int.parse(t); // may throw FormatException if token isn't numeric (ok)
       if (value < 0) {
         negatives.add(value);
-      } else {
+      } else if (value <= 1000) {
         sum += value;
       }
     }
