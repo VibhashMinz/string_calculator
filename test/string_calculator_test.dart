@@ -17,5 +17,14 @@ void main() {
       final calc = StringCalculator();
       expect(calc.add("4,3"), 7);
     });
+    test("returns sum of multiple numbers separated by commas", () {
+      final calc = StringCalculator();
+      expect(calc.add("4,3,7"), 14);
+    });
+
+    test("handles new lines as delimiters", () {
+      final calc = StringCalculator();
+      expect(calc.add("1,\n2,5"), equals(8));
+    });
   });
 }
