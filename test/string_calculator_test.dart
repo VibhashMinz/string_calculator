@@ -7,5 +7,10 @@ void main() {
       final calc = StringCalculator();
       expect(calc.add(""), 0);
     });
+
+    test("return the number itself when only one is given as input", () {
+      final calc = StringCalculator();
+      expect(calc.add("5"), 5);
+    });
   });
 }
